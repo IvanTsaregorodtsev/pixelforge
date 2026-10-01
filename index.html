@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PIXELFORGE — собираю команду разработчиков игр</title>
+<meta name="description" content="PIXELFORGE — новая инди-студия. Ищу разработчиков для создания качественных 3D-проектов и приложений, приносящих максимум прибыли и эмоций. Честное распределение дохода по вкладу каждого.">
+<style>
+  :root{
+    --bg:#0b0f1a;
+    --bg2:#101627;
+    --panel:#151c31;
+    --panel2:#1a2340;
+    --line:#2a3457;
+    --text:#e7ecf7;
+    --muted:#9aa6c4;
+    --accent:#6c5ce7;
+    --accent2:#00d2ff;
+    --grad:linear-gradient(135deg,#6c5ce7 0%,#00d2ff 100%);
+    --grad2:linear-gradient(120deg,#ff6b6b 0%,#ffd54a 50%,#00d2ff 100%);
+    --radius:16px;
+    --shadow:0 20px 50px -20px rgba(0,0,0,.6);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--accent);color:#fff}
+  ::-webkit-scrollbar{width:10px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:linear-gradient(var(--accent),var(--accent2));border-radius:10px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--accent2)}
+  .container{max-width:1120px;margin:0 auto;padding:0 24px}
+
+  /* мерцающие звёзды в фоне всех секций */
+  .stars-layer{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .star-dot{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;opacity:0;animation:twinkle linear infinite}
+  @keyframes twinkle{
+    0%,100%{opacity:0;transform:scale(.6)}
+    40%{opacity:.8;transform:scale(1.2)}
+  }
+
+  /* ---------- NAV ---------- */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    backdrop-filter:blur(14px);
+    background:rgba(11,15,26,.7);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:70px}
+  .logo{
+    font-weight:800;font-size:1.35rem;letter-spacing:1px;
+    background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .nav-links{display:flex;gap:32px;font-weight:600;font-size:.95rem}
+  .nav-links a{color:var(--muted);transition:color .2s}
+  .nav-links a:hover{color:var(--text)}
+  .hamburger{display:none;background:none;border:0;cursor:pointer;padding:8px}
+  .hamburger span{display:block;width:24px;height:2px;background:var(--text);margin:5px 0;transition:.3s}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex;align-items:center;
+    padding:120px 0 80px;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(600px 400px at 80% 20%,rgba(108,92,231,.35),transparent 60%),
+      radial-gradient(500px 350px at 15% 80%,rgba(0,210,255,.2),transparent 60%);
+    z-index:-1;
+  }
+  .hero-grid{
+    position:absolute;inset:0;z-index:-2;
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:48px 48px;
+    mask-image:radial-gradient(circle at 70% 30%,black 0%,transparent 70%);
+    opacity:.35;
+  }
+  .hero .container{display:grid;grid-template-columns:1.2fr .8fr;gap:60px;align-items:center}
+  .eyebrow{
+    display:inline-block;
+    font-size:.8rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+    color:var(--accent2);
+    padding:6px 14px;border:1px solid var(--line);border-radius:999px;
+    margin-bottom:22px;
+  }
+  .hero h1{font-size:clamp(2.3rem,5vw,4rem);line-height:1.1;font-weight:800;margin-bottom:20px}
+  .hero h1 .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p.lead{font-size:1.15rem;color:var(--muted);max-width:540px;margin-bottom:34px}
+  .btn-group{display:flex;gap:16px;flex-wrap:wrap}
+  .btn{
+    display:inline-block;padding:14px 30px;border-radius:12px;
+    font-weight:700;font-size:1rem;transition:.25s;cursor:pointer;border:0;
+  }
+  .btn-primary{background:var(--grad);color:#fff;box-shadow:0 10px 30px -8px rgba(108,92,231,.6)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 40px -8px rgba(108,92,231,.8)}
+  .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--accent2);color:var(--accent2);transform:translateY(-2px)}
+  .hero-card{
+    position:relative;border-radius:var(--radius);overflow:hidden;
+    background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);
+    transform:rotate(2deg);
+    display:flex;align-items:center;justify-content:center;min-height:420px;
+    background:
+      linear-gradient(var(--panel),var(--panel)) padding-box,
+      linear-gradient(135deg,#6c5ce7,#00d2ff,#ff6b6b) border-box;
+    border:2px solid transparent;
+  }
+  .hero-card::before{
+    content:"";position:absolute;inset:-40%;
+    background:conic-gradient(from 0deg,transparent 60%,rgba(108,92,231,.35),rgba(0,210,255,.35),transparent 80%);
+    animation:spin 6s linear infinite;z-index:0;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .hero-card .hire-chip{
+    text-align:center;padding:40px;
+  }
+  .hero-card .hire-chip .pulse{
+    width:90px;height:90px;margin:0 auto 20px;border-radius:50%;
+    background:var(--grad);display:grid;place-items:center;font-size:2.4rem;
+    box-shadow:0 0 0 0 rgba(108,92,231,.5);animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(108,92,231,.5)}
+    70%{box-shadow:0 0 0 24px rgba(108,92,231,0)}
+    100%{box-shadow:0 0 0 0 rgba(108,92,231,0)}
+  }
+  .hero-card .hire-chip h3{font-size:1.5rem;margin-bottom:8px}
+  .hero-card .hire-chip p{color:var(--muted);font-size:.95rem}
+
+  /* ---------- SECTION ---------- */
+  section{padding:100px 0;position:relative;z-index:1}
+  .sec-head{text-align:center;max-width:640px;margin:0 auto 60px}
+  .sec-head .kicker{color:var(--accent2);font-weight:700;letter-spacing:3px;text-transform:uppercase;font-size:.8rem;margin-bottom:12px}
+  .sec-head h2{
+    font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:800;
+    background:linear-gradient(120deg,#fff 30%,var(--accent2) 60%,var(--accent) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .sec-head p{color:var(--muted);margin-top:14px}
+
+  /* ---------- VISION ---------- */
+  .vision{background:var(--bg2)}
+  .vision .container{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+  .vision-text h2{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:800;margin-bottom:22px}
+  .vision-text p{color:var(--muted);margin-bottom:18px}
+  .vision-text strong{color:var(--text);font-weight:700}
+
+  /* ---------- ROLES / VACANCIES ---------- */
+  .roles{background:var(--bg)}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:28px;transition:.3s;
+  }
+  .card:hover{transform:translateY(-8px) scale(1.02);border-color:var(--accent);box-shadow:0 22px 55px -18px rgba(108,92,231,.7)}
+  .card .icon{font-size:2.2rem;margin-bottom:16px}
+  .card h3{font-size:1.2rem;margin-bottom:10px}
+  .card p{color:var(--muted);font-size:.92rem;margin-bottom:18px;flex:1}
+  .card .tag{
+    display:inline-block;background:rgba(108,92,231,.15);color:var(--accent2);
+    padding:6px 14px;border-radius:8px;font-size:.82rem;font-weight:700;
+  }
+  .card .demand{margin-top:14px;font-size:.85rem;color:var(--muted)}
+  .card .me-badge{
+    position:absolute;top:14px;right:14px;
+    background:var(--grad);color:#fff;border-radius:999px;
+    padding:5px 14px;font-size:.78rem;font-weight:800;
+  }
+  .card.mine{border-color:var(--accent);background:linear-gradient(160deg,rgba(108,92,231,.15),var(--panel) 55%)}
+
+  /* ---------- CONDITIONS ---------- */
+  .conditions{background:var(--bg2)}
+  .cond-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .cond-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:28px;transition:.3s;
+  }
+  .cond-card:hover{border-color:var(--accent2);transform:translateY(-4px)}
+  .cond-card .num{font-size:1.6rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px}
+  .cond-card h3{font-size:1.1rem;margin-bottom:10px}
+  .cond-card p{color:var(--muted);font-size:.92rem}
+
+  /* ---------- ATMOSPHERE ---------- */
+  .atmosphere{background:var(--bg)}
+  .atmos-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .atmos-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:30px;transition:.3s;
+  }
+  .atmos-card:hover{border-color:var(--accent2);transform:translateY(-4px)}
+  .atmos-card .icon{font-size:2.4rem;margin-bottom:14px}
+  .atmos-card h3{font-size:1.2rem;margin-bottom:12px}
+  .atmos-card p{color:var(--muted);font-size:.95rem}
+  .atmos-welcome{
+    grid-column:1 / -1;
+    background:linear-gradient(135deg,rgba(108,92,231,.2),rgba(0,210,255,.12));
+    border:1px solid var(--accent);
+    text-align:center;padding:36px;
+  }
+  .atmos-welcome h3{font-size:1.4rem;margin-bottom:12px}
+  .atmos-welcome p{color:var(--text);font-size:1.05rem;line-height:1.7}
+  .atmos-welcome .accent{color:var(--accent2);font-weight:700}
+
+  /* ---------- CABINET ---------- */
+  .cabinet{background:var(--bg)}
+  .cabinet-wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+  .cabinet-steps{display:grid;gap:16px}
+  .step{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px;display:flex;gap:18px;align-items:flex-start;transition:.3s;
+  }
+  .step:hover{border-color:var(--accent2);transform:translateY(-3px)}
+  .step .step-num{
+    flex:0 0 44px;height:44px;border-radius:12px;background:var(--grad);
+    display:grid;place-items:center;font-weight:800;color:#fff;font-size:1.1rem;
+  }
+  .step h4{font-size:1.05rem;margin-bottom:6px}
+  .step p{color:var(--muted);font-size:.9rem}
+  .cabinet-demo{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;box-shadow:var(--shadow);
+  }
+  .cabinet-demo .cd-head{
+    background:var(--panel2);border-bottom:1px solid var(--line);
+    padding:16px 20px;display:flex;justify-content:space-between;align-items:center;
+  }
+  .cabinet-demo .cd-head .cd-name{font-weight:800}
+  .cabinet-demo .cd-head .cd-stars{color:#ffd54a;letter-spacing:2px}
+  .cd-body{padding:20px}
+  .cd-body .cd-rev{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:16px}
+  .cd-body .cd-rev .lbl{color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:1px}
+  .cd-body .cd-rev .val{font-size:1.4rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .cd-task{
+    background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px;
+  }
+  .cd-task .lbl{color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+  .cd-task .task-text{font-size:.95rem;margin-bottom:12px}
+  .file-drop{
+    border:2px dashed var(--line);border-radius:10px;padding:18px;text-align:center;
+    color:var(--muted);font-size:.85rem;cursor:pointer;transition:.2s;margin-bottom:12px;
+  }
+  .file-drop:hover{border-color:var(--accent2);color:var(--text)}
+  .cd-done{
+    width:100%;background:#22c55e;border:0;border-radius:10px;padding:13px;
+    color:#fff;font-weight:700;font-size:.95rem;cursor:pointer;transition:.2s;
+  }
+  .cd-done:hover{filter:brightness(1.1)}
+  .cd-foot{
+    padding:14px 20px;background:rgba(34,197,94,.08);border-top:1px solid var(--line);
+    color:#4ade80;font-weight:700;font-size:.9rem;text-align:center;
+  }
+
+  /* ---------- DOSSIER ---------- */
+  .dossier{background:var(--bg2)}
+  .dossier-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
+  .member-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;transition:.3s;display:flex;flex-direction:column;
+  }
+  .member-card:hover{transform:translateY(-6px);border-color:var(--accent);box-shadow:var(--shadow)}
+  .member-head{
+    padding:26px 26px 18px;color:#fff;position:relative;overflow:hidden;
+    background:linear-gradient(135deg,#6c5ce7,#00d2ff);
+  }
+  .member-head.gold{background:linear-gradient(135deg,#f59e0b,#ffd54a)}
+  .member-avatar{
+    width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.2);
+    display:grid;place-items:center;font-size:2rem;font-weight:800;border:2px solid rgba(255,255,255,.6);
+  }
+  .member-head h3{font-size:1.4rem;margin-top:14px}
+  .member-head .role{font-size:.85rem;opacity:.9;font-weight:700;margin-top:4px}
+  .member-head .badge-founder{
+    position:absolute;top:14px;right:14px;background:rgba(0,0,0,.25);
+    padding:6px 14px;border-radius:999px;font-size:.75rem;font-weight:800;
+  }
+  .member-body{padding:22px 26px;flex:1}
+  .member-body p{color:var(--muted);font-size:.94rem;line-height:1.65}
+  .member-foot{
+    padding:16px 26px;border-top:1px solid var(--line);
+    color:var(--accent2);font-weight:700;font-size:.9rem;
+  }
+
+/* ---------- CONTACT / APPLY ---------- */
+  .contact{background:var(--bg)}
+  .contact .container{max-width:760px}
+  .contact-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:44px;text-align:center;
+  }
+  .contact-card h2{font-size:1.8rem;margin-bottom:14px}
+  .contact-card p{color:var(--muted);margin-bottom:30px}
+  .contact-actions{
+    display:flex;flex-direction:column;gap:14px;align-items:stretch;
+    max-width:380px;margin:0 auto;
+  }
+  .contact-btn{
+    display:block;text-align:center;width:100%;
+    padding:16px 30px;border-radius:12px;font-weight:700;font-size:1rem;
+    transition:transform .2s,box-shadow .2s;
+  }
+  .contact-btn.primary{
+    background:var(--grad);color:#fff;
+    box-shadow:0 10px 30px -8px rgba(108,92,231,.6);
+  }
+  .contact-btn.primary:hover{transform:translateY(-2px);box-shadow:0 16px 40px -8px rgba(108,92,231,.8)}
+  .contact-btn.ghost{
+    background:transparent;border:1px solid var(--line);color:var(--text);
+  }
+  .contact-btn.ghost:hover{border-color:var(--accent2);color:var(--accent2);transform:translateY(-2px)}
+  .contact-email{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    background:transparent;border:1px solid var(--line);border-radius:12px;
+    padding:12px 16px;width:100%;cursor:default;user-select:text;
+  }
+  .contact-email .email-text{color:var(--text);font-size:.95rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .contact-email .email-copy{
+    flex:0 0 auto;background:none;border:1px solid var(--accent);color:var(--accent2);
+    border-radius:8px;padding:8px 14px;font-weight:700;font-size:.82rem;cursor:pointer;transition:.2s;
+  }
+  .contact-email .email-copy:hover{background:rgba(108,92,231,.15);border-color:var(--accent2)}
+  .contact-email .email-copy.copied{background:#22c55e;border-color:#22c55e;color:#fff}
+  form{display:grid;gap:16px;text-align:left}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  input,textarea,select{
+    width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:12px;
+    padding:14px 16px;color:var(--text);font-size:1rem;font-family:inherit;
+    transition:.2s;outline:none;
+  }
+  input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+  select{appearance:none;cursor:pointer}
+  textarea{resize:vertical;min-height:110px}
+  .btn-submit{background:var(--grad);color:#fff;padding:16px;border:0;border-radius:12px;font-weight:700;font-size:1rem;cursor:pointer;transition:.25s}
+  .btn-submit:hover{transform:translateY(-2px);box-shadow:0 14px 34px -8px rgba(108,92,231,.6)}
+  .socials{display:flex;justify-content:center;gap:14px;margin-top:26px}
+  .socials a{
+    width:46px;height:46px;border:1px solid var(--line);border-radius:12px;display:grid;place-items:center;
+    font-weight:700;color:var(--muted);transition:.25s;
+  }
+  .socials a:hover{color:#fff;border-color:var(--accent);background:rgba(108,92,231,.15)}
+
+  /* ---------- ANIMATIONS ---------- */
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.25,.6,.3,1),transform .8s cubic-bezier(.25,.6,.3,1)}
+  .reveal.in{opacity:1;transform:none}
+  .reveal.d1{transition-delay:.08s}
+  .reveal.d2{transition-delay:.16s}
+  .reveal.d3{transition-delay:.24s}
+  .reveal.d4{transition-delay:.32s}
+  .reveal.d5{transition-delay:.4s}
+
+  /* частицы в hero */
+  .orbs{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+  .orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.5;animation:float 12s ease-in-out infinite}
+  .orb.o1{width:340px;height:340px;background:rgba(108,92,231,.5);top:-60px;left:-40px}
+  .orb.o2{width:280px;height:280px;background:rgba(0,210,255,.4);bottom:-40px;right:-30px;animation-delay:-4s}
+  .orb.o3{width:180px;height:180px;background:rgba(108,92,231,.35);top:40%;left:60%;animation-delay:-8s}
+  .orb.o4{width:140px;height:140px;background:rgba(0,210,255,.3);top:15%;right:35%;animation-delay:-2s}
+  @keyframes float{
+    0%,100%{transform:translate(0,0) scale(1)}
+    33%{transform:translate(20px,-30px) scale(1.08)}
+    66%{transform:translate(-15px,20px) scale(.95)}
+  }
+
+  /* свечение карточек */
+  .card,.cond-card,.step,.bal-card,.news-card{position:relative}
+  .card::before,.cond-card::before,.step::before{
+    content:"";position:absolute;inset:0;border-radius:inherit;opacity:0;transition:opacity .4s;
+    background:radial-gradient(400px circle at var(--mx,50%) var(--my,50%),rgba(108,92,231,.18),transparent 60%);
+    pointer-events:none;
+  }
+  .card:hover::before,.cond-card:hover::before,.step:hover::before{opacity:1}
+
+  /* кнопка-primary блик */
+  .btn-primary{position:relative;overflow:hidden}
+  .btn-primary::after{
+    content:"";position:absolute;top:0;left:-80%;width:50%;height:100%;
+    background:linear-gradient(120deg,transparent,rgba(255,255,255,.4),transparent);
+    transform:skewX(-20deg);transition:left .5s;
+  }
+  .btn-primary:hover::after{left:130%}
+
+  /* пульс текста зачаточный */
+  .hero h1 .grad{background-size:200% 100%;animation:gradFlow 6s ease infinite}
+  @keyframes gradFlow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+  .logo{background-size:200% 100%;animation:gradFlow 8s ease infinite}
+
+  /* ---------- FOOTER ---------- */
+  footer{background:#070a13;border-top:1px solid var(--line);padding:30px 0}
+  .footer{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:.85rem;flex-wrap:wrap;gap:12px}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media(max-width:960px){
+    .grid,.cond-grid{grid-template-columns:1fr 1fr}
+    .hero .container,.vision .container{grid-template-columns:1fr}
+    .hero-card{max-width:520px;margin:40px auto 0;transform:none;min-height:340px}
+  }
+  @media(max-width:640px){
+    .nav-links{
+      position:fixed;top:70px;left:0;right:0;
+      background:var(--bg2);flex-direction:column;gap:0;
+      padding:0 24px;border-bottom:1px solid var(--line);
+      display:none;
+    }
+    .nav-links.open{display:flex}
+    .nav-links a{padding:18px 0;border-bottom:1px solid var(--line)}
+    .hamburger{display:block}
+    .grid,.cond-grid,.row,.cabinet-wrap,.atmos-wrap{grid-template-columns:1fr}
+    section{padding:70px 0}
+  }
+</style>
+</head>
+<body>
+
+<div class="stars-layer" id="starsLayer"></div>
+
+<header>
+  <div class="container nav">
+    <a href="#" class="logo">PIXELFORGE</a>
+    <div class="nav-links" id="navLinks">
+      <a href="#vision">О студии</a>
+      <a href="#roles">Кого ищу</a>
+      <a href="#conditions">Условия</a>
+      <a href="#atmosphere">Атмосфера</a>
+      <a href="#cabinet">Личный кабинет</a>
+      <a href="#dossier">Досье</a>
+      <a href="#contact">Оставить заявку</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Меню">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="orbs">
+    <div class="orb o1"></div>
+    <div class="orb o2"></div>
+    <div class="orb o3"></div>
+    <div class="orb o4"></div>
+  </div>
+  <div class="container">
+    <div>
+      <span class="eyebrow reveal in">Объявляем набор</span>
+      <h1 class="reveal in d1">Собираю команду,<br>чтобы делать игры<br><span class="grad">до слёз</span></h1>
+      <p class="lead reveal in d2">PIXELFORGE — новая инди-студия. Ищу людей, которые хотят создавать качественные 3D-проекты и приложения, приносящие максимум прибыли и эмоций. Начинаем с нуля — проектов и денег пока нет, но есть идеи и желание работать.</p>
+      <div class="btn-group reveal in d3">
+        <a href="#roles" class="btn btn-primary">Кого я ищу</a>
+        <a href="#contact" class="btn btn-ghost">Оставить заявку</a>
+      </div>
+    </div>
+    <div class="hero-card reveal in d2">
+      <div class="hire-chip">
+        <div class="pulse">🎮</div>
+        <h3>Веду набор в команду</h3>
+        <p>Разработчики, художники, 3D-моделлеры, сценаристы и музыканты — вы нужны мне</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="vision" id="vision">
+  <div class="container">
+    <div class="vision-text">
+      <h2>Что я задумал</h2>
+      <p>Я — один начинающий разработчик, который делает ставку на <strong>историю, эмоции и прибыль</strong>. Планирую создавать качественные 3D-проекты и приложения, которые приносят максимум прибыли и эмоций, — не про графику ради графики, а про то, что остаётся с игроком после титров.</p>
+      <p>Делаю игры <strong>с помощью нейросетей и своих знаний</strong>: искусственный интеллект ускоряет арт, код, звук и тексты, а живой вклад команды превращает это в настоящий проект.</p>
+      <p>Сейчас я единственный разработчик в студии. Чтобы игры увидели свет, нужны ещё люди — <strong>двигаемся постепенно</strong>, шаг за шагом, от идеи к прототипу, от прототипа к игре.</p>
+      <p>Собираю честную команду энтузиастов на равных началах.</p>
+    </div>
+    <div class="conditions" style="background:transparent">
+      <div class="cond-grid" style="grid-template-columns:1fr">
+        <div class="cond-card reveal">
+          <div class="num">01</div>
+          <h3>Работаем постепенно</h3>
+          <p>На старте — 3–4 часа в день. Сначала собираем первую игру, получаем первые средства.</p>
+        </div>
+        <div class="cond-card reveal d1">
+          <div class="num">02</div>
+          <h3>Доход — по вкладу</h3>
+          <p>Все заработанные на играх деньги распределяются честно, пропорционально обязанностям каждого в команде.</p>
+        </div>
+        <div class="cond-card reveal d2">
+          <div class="num">03</div>
+          <h3>Рост нагрузки</h3>
+          <p>После получения первых средств рабочий день вырастает до 9 часов — команда переходит в полный режим.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="roles" id="roles">
+  <div class="container">
+    <div class="sec-head">
+      <div class="kicker">Вакансии</div>
+      <h2>Кого я ищу</h2>
+      <p>Пока проектов и денег нет — я ищу соавторов, готовых начать с нуля и разделить путь.</p>
+    </div>
+    <div class="grid">
+      <article class="card reveal">
+        <div class="icon">🧑‍💻</div>
+        <h3>Разработчик</h3>
+        <p>Программирование игр на Unity, Godot, Unreal или движке, который выберет команда. Хелпер в геймдизайне приветствуется.</p>
+        <div class="tag">Unity / Godot / Unreal</div>
+        <div class="demand">Нужно: базовое понимание языка и логики игры, желание учиться.</div>
+      </article>
+      <article class="card reveal d1">
+        <div class="icon">🧊</div>
+        <h3>3D-моделлер</h3>
+        <p>Модели, текстуры и анимации для 3D-проектов. Blender достаточно — платные пакеты не обязательны.</p>
+        <div class="tag">Blender / 3D</div>
+        <div class="demand">Нужно: базовые навыки моделирования.</div>
+      </article>
+      <article class="card reveal d2">
+        <div class="icon">✍️</div>
+        <h3>Сценарист</h3>
+        <p>Автор, который пишет сюжет, диалоги и лор. Главная роль — потому что мои игры строятся вокруг истории.</p>
+        <div class="tag">Нарратив / сюжет</div>
+        <div class="demand">Нужно: чувство сюжета и любовь к историям, которые цепляют.</div>
+      </article>
+      <article class="card reveal d3">
+        <div class="icon">🎵</div>
+        <h3>Музыкант / звукорежиссёр</h3>
+        <p>Саундтреки и звуковое оформление, которые усиливают эмоции сцен и погружают в мир игры.</p>
+        <div class="tag">Музыка / звук</div>
+        <div class="demand">Нужно: базовые навыки и чувство настроения.</div>
+      </article>
+      <article class="card mine reveal d4">
+        <div class="icon">🎮</div>
+        <span class="me-badge">Это я</span>
+        <h3>Геймдизайнер</h3>
+        <p>Механики, уровни и баланс. Превращает идеи в интересный и эмоциональный игровой опыт. — Эту роль занимаю я.</p>
+        <div class="tag">Геймдизайн</div>
+        <div class="demand">Занято мной — основателем студии.</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="conditions" id="conditions">
+  <div class="container">
+    <div class="sec-head">
+      <div class="kicker">Условия</div>
+      <h2>Как всё устроено</h2>
+      <p>Честно и прозрачно — чтобы каждый знал, на что идёт.</p>
+    </div>
+    <div class="cond-grid">
+      <div class="cond-card reveal">
+        <div class="num">01</div>
+        <h3>Работа полностью удалённо</h3>
+        <p>Работа из любой точки. В будущем — отдельный офис для команды.</p>
+      </div>
+      <div class="cond-card reveal d1">
+        <div class="num">02</div>
+        <h3>Каждый день — отчётность</h3>
+        <p>В конце дня ты сдаёшь отчёт о проделанной работе: скриншоты, видеозапись, текст — что угодно, что подтверждает твой результат.</p>
+      </div>
+      <div class="cond-card reveal d2">
+        <div class="num">03</div>
+        <h3>Рабочие дни — Пн–Пт</h3>
+        <p>Работаем каждый день, кроме субботы и воскресенья. Дедлайн задачи — до конца дня, закрывается обязательно.</p>
+      </div>
+      <div class="cond-card reveal d3">
+        <div class="num">04</div>
+        <h3>Доход — пропорционально вкладу</h3>
+        <p>Все деньги, полученные с игр, распределяются честно: по обязанностям и вкладу каждого участника. Выручка приходит в личный кабинет.</p>
+      </div>
+      <div class="cond-card reveal d4">
+        <div class="num">05</div>
+        <h3>Полный день — после первых средств</h3>
+        <p>Как только появляются первые стабильные доходы, команда переходит на полный рабочий день — 9 часов.</p>
+      </div>
+      <div class="cond-card reveal d5">
+        <div class="num">06</div>
+        <h3>Звёзды за качество</h3>
+        <p>Если всё делаешь вовремя и качественно — получаешь звёздочки. При выплате зарплаты они дают небольшую премию к твоему вознаграждению.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="atmosphere" id="atmosphere">
+  <div class="container">
+    <div class="sec-head">
+      <div class="kicker">Атмосфера</div>
+      <h2>Наша команда — это друзья</h2>
+      <p>У нас царит дружелюбная атмосфера, где каждый чувствует себя комфортно.</p>
+    </div>
+    <div class="atmos-wrap">
+      <div class="atmos-card reveal">
+        <div class="icon">🤝</div>
+        <h3>Личные встречи</h3>
+        <p>Периодически проводим личные встречи — по желанию участников. Никто никого не принуждает, но вместе всегда веселее.</p>
+      </div>
+      <div class="atmos-card reveal d1">
+        <div class="icon">🎉</div>
+        <h3>Совместный отдых</h3>
+        <p>Игры, кино, прогулки и просто болтовня вне работы. Отдыхаем вместе — так командный дух крепче.</p>
+      </div>
+      <div class="atmos-card reveal d2">
+        <div class="icon">😂</div>
+        <h3>Шутки и свобода общения</h3>
+        <p>Шутки, чёрный юмор, мемы и даже маты — можно всё! Чувствуйте себя комфортно и будьте собой.</p>
+      </div>
+      <div class="atmos-card reveal d3">
+        <div class="icon">🚫</div>
+        <h3>Никакого негатива</h3>
+        <p>Никакой неприязни и негатива человека к человеку. За подобные нарушения может быть принято решение исключить участника из команды.</p>
+      </div>
+      <div class="atmos-welcome reveal">
+        <h3>Добро пожаловать в команду! 🎮</h3>
+        <p>Если ты готов <span class="accent">развиваться</span> и <span class="accent">обучаться чему-то новому</span> — тебе у нас понравится. Присоединяйся к дружной семье разработчиков!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cabinet" id="cabinet">
+  <div class="container">
+    <div class="sec-head">
+      <div class="kicker">Личный кабинет</div>
+      <h2>Работа по-умному</h2>
+      <p>У каждого работника — свой личный кабинет: выручка, задачи и ежедневная отчётность в одном месте.</p>
+    </div>
+    <div class="cabinet-wrap">
+      <div class="cabinet-steps">
+        <div class="step reveal">
+          <div class="step-num">1</div>
+          <div>
+            <h4>Начинаешь, когда удобно</h4>
+            <p>Можешь приступить к работе в любое время суток — главное успеть до конца дня.</p>
+          </div>
+        </div>
+        <div class="step reveal d1">
+          <div class="step-num">2</div>
+          <div>
+            <h4>Открываешь сегодняшнюю дату</h4>
+            <p>Видишь свою задачу на сегодня — она появляется в календаре автоматически.</p>
+          </div>
+        </div>
+        <div class="step reveal d2">
+          <div class="step-num">3</div>
+          <div>
+            <h4>Прикрепляешь отчёт</h4>
+            <p>Скриншоты, видеозапись или текст — что угодно, что подтверждает работу.</p>
+          </div>
+        </div>
+        <div class="step reveal d3">
+          <div class="step-num">4</div>
+          <div>
+            <h4>Нажимаешь «Выполнено»</h4>
+            <p>Дедлайн закрыт. За вовремя и качественно сделанную работу копишь звёзды — они дают премию к зарплате.</p>
+          </div>
+        </div>
+      </div>
+      <div class="cabinet-demo">
+        <div class="cd-head">
+          <span class="cd-name">Личный кабинет · Иван</span>
+          <span class="cd-stars">★ ★ ★ ★ ☆</span>
+        </div>
+        <div class="cd-body">
+          <div class="cd-rev">
+            <div class="lbl">Выручка на счету</div>
+            <div class="val">12 500 ₽</div>
+          </div>
+          <div class="cd-rev">
+            <div class="lbl">Сегодня · Чт</div>
+            <div class="val" style="font-size:1rem;color:var(--text);background:none">Задача на сегодня</div>
+          </div>
+          <div class="cd-task">
+            <div class="lbl">Задача</div>
+            <div class="task-text">Смоделировать 3D-персонажа «Лис» для сцены 2 — 3 варианта</div>
+            <div class="file-drop">📎 Прикрепить отчёт (скрин, видео, текст)</div>
+            <button class="cd-done">Выполнено ✓</button>
+          </div>
+        </div>
+        <div class="cd-foot">Работаем Пн–Пт · дедлайн — до конца дня</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="dossier" id="dossier">
+  <div class="container">
+    <div class="sec-head">
+      <div class="kicker">Досье участников</div>
+      <h2>Наша команда</h2>
+      <p>Знакомьтесь с теми, кто уже в команде. Здесь появится каждый участник.</p>
+    </div>
+    <div class="dossier-grid">
+      <article class="member-card reveal">
+        <div class="member-head gold">
+          <div class="member-avatar" style="background:url('ivan.jpg') center/cover;border:2px solid rgba(255,255,255,.6)"></div>
+          <div class="badge-founder">Основатель</div>
+          <h3>Иван</h3>
+          <div class="role">Геймдизайнер · Разработчик</div>
+        </div>
+        <div class="member-body">
+          <p>Всем привет, я Иван! Мне почти 21 год, и всю свою жизнь я играл в игры. Да, буквально всю жизнь: в 5 лет я уже прошёл одну из частей Call of Duty, где был Чернобыль. В 12–14 лет пытался программировать, в 16 создавал собственные новеллы, а с 18 лет и по нынешнее время делаю маленькие инди-проекты — «игрушечки» с помощью нейросети и своих навыков.</p>
+          <p style="margin-top:12px">Понял, что хочу посвятить разработке игр самую лучшую частичку своей души. За компьютером провожу по 12 часов в день.</p>
+          <p style="margin-top:12px">На этом, наверное, всё. Ну и, конечно, пришла пора познакомиться с новыми ребятами, создать что-то новое — эта неизвестность манит и даёт очень хорошие впечатления. Короче! Подавайте скорее заявку 🎮</p>
+        </div>
+        <div class="member-foot">Готов к знакомству и новым проектам</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="contact-card">
+      <h2>Оставить заявку</h2>
+      <p>Когда будешь готов подать заявку — просто напиши мне одно сообщение, например: <em>«Здравствуйте, 3D-художник»</em>, и укажи, кем хочешь быть. Я отвечу лично!</p>
+      <div class="contact-actions">
+        <a class="contact-btn primary" href="https://vk.com/phara2005" target="_blank" rel="noopener">ВКонтакте — моя страница</a>
+        <div class="contact-email">
+          <span class="email-text">✉️ tsaregorodtsevi@inbox.ru</span>
+          <button class="email-copy" id="copyEmailBtn">Копировать</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container footer">
+    <span>© 2026 PIXELFORGE Studio. Набираю команду.</span>
+    <span>Сделано с ❤️ и кофе</span>
+  </div>
+</footer>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+  });
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => navLinks.classList.remove('open'));
+  });
+
+  document.querySelectorAll('.cd-done').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.textContent = 'Задача закрыта! 🎉';
+      btn.parentElement.parentElement.querySelector('.cd-foot').textContent = 'Задача принята · работа сдана вовремя';
+    });
+  });
+
+  /* ---- анимации появления при скролле ---- */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  /* ---- свечение карточек за курсором ---- */
+  document.querySelectorAll('.card,.cond-card,.step').forEach(c => {
+    c.addEventListener('mousemove', (e) => {
+      const r = c.getBoundingClientRect();
+      c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+  });
+
+  /* ---- мерцающие звёзды в фоне ---- */
+  const layer = document.getElementById('starsLayer');
+  for(let i=0;i<60;i++){
+    const d = document.createElement('div');
+    d.className = 'star-dot';
+    d.style.left = (Math.random()*100) + '%';
+    d.style.top = (Math.random()*100) + '%';
+    const s = 0.8 + Math.random()*2;
+    d.style.transform = 'scale('+s+')';
+    d.style.animationDuration = (2+Math.random()*4)+'s';
+    d.style.animationDelay = (Math.random()*5)+'s';
+    if(Math.random()<0.3) d.style.background = 'var(--accent2)';
+    layer.appendChild(d);
+  }
+/* ---- копирование email ---- */
+  document.getElementById('copyEmailBtn').addEventListener('click', function(){
+    navigator.clipboard.writeText('tsaregorodtsevi@inbox.ru').then(() => {
+      this.textContent = 'Скопировано ✓';
+      this.classList.add('copied');
+      setTimeout(() => { this.textContent = 'Копировать'; this.classList.remove('copied'); }, 2000);
+    });
+  });
+</script>
+
+</body>
+</html>
